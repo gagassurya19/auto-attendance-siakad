@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./recaptcha_v2_solver"
+    ]
+}

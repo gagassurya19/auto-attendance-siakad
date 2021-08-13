@@ -4,7 +4,7 @@ from selenium import webdriver
 #
 #
 # Emailmu Si AKAD blyat
-Email = ""
+Email = "gagas_surya_28rpl@student.smktelkom-mlg.sch.id"
 #
 #
 #
@@ -22,11 +22,16 @@ def password():
 def browser():
     chromes = webdriver.ChromeOptions()
     chromes.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-    chromes.add_argument("--headless")
+    # chromes.add_argument("--headless")
     chromes.add_argument("--no-sandbox")
     chromes.add_argument("--disable-dev-sh-usage")
 
-    browser = webdriver.Chrome(executable_path=os.environ.get(
-        "CHROMEDRIVER_PATH"), chrome_options=chromes)
+    ## Release
+    # webdriver for heroku
+    # browser = webdriver.Chrome(executable_path=os.environ.get(
+    #     "CHROMEDRIVER_PATH"), chrome_options=chromes)
     
+    ## Development
+    browser = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver')
+
     return browser

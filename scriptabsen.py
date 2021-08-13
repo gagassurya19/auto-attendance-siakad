@@ -1,26 +1,46 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 import pytz
 import time
 from time import sleep
 from datetime import datetime
 
+# system libraries
+import os
+import urllib
+
+# recaptcha libraries
+import pydub
+import speech_recognition as sr
 
 def runscript(email, password, browser):
-    try:
-        browser.get("https://siswa.smktelkom-mlg.sch.id")
-    except:
-        browser.close()
-        return False
+    isError = True
+    while(isError):
+        try:
+            try:
+                browser.get("https://siswa.smktelkom-mlg.sch.id")
+            except:
+                browser.close()
+                return False
 
-    emailinput = browser.find_element_by_xpath(
-        '//*[@id="form_login"]/div[2]/div/input')
-    passinput = browser.find_element_by_xpath(
-        '//*[@id="form_login"]/div[3]/div/input')
-    enter = browser.find_element_by_id('masuk')
+            emailinput = browser.find_element_by_xpath(
+                '//*[@id="form_login"]/div[2]/div/input')
+            passinput = browser.find_element_by_xpath(
+                '//*[@id="form_login"]/div[3]/div/input')
 
-    emailinput.send_keys(str(email))
-    passinput.send_keys(str(password))
-    enter.click()
+            enter = browser.find_element_by_id('masuk')
+
+            emailinput.send_keys(str(email))
+            passinput.send_keys(str(password))
+
+            captcha(browser, Keys)
+
+            enter.click()
+
+            isError = False
+        except Exception:
+            isError = True
+
 
     time.sleep(2)
 
@@ -71,3 +91,75 @@ def override(email, password, browser):
         data = runscript(email, password, browser)
         if data == True:
             return True
+
+
+def captcha(browser, Keys):
+    # main program
+    # switch to recaptcha frame
+    frames = browser.find_elements_by_tag_name("iframe")
+    browser.switch_to.frame(frames[0])
+    browser.implicitly_wait(5)
+
+    # click on checkbox to activate recaptcha
+    browser.find_element_by_class_name("recaptcha-checkbox-border").click()
+
+    try:
+        # switch to recaptcha audio control frame
+        browser.switch_to.default_content()
+        frames = browser.find_element_by_xpath("/html/body/div[2]/div[4]").find_elements_by_tag_name("iframe")
+        browser.switch_to.frame(frames[0])
+        browser.implicitly_wait(5)
+
+
+        # click on audio challenge
+        browser.find_element_by_id("recaptcha-audio-button").click()
+
+        # switch to recaptcha audio challenge frame
+        browser.switch_to.default_content()
+        frames = browser.find_elements_by_tag_name("iframe")
+        browser.switch_to.frame(frames[-1])
+        browser.implicitly_wait(5)
+
+        audioRecognition(browser, Keys)
+        
+        multiple_correct = browser.find_elements_by_class_name("rc-audiochallenge-error-message")
+
+        while(multiple_correct):
+            audioRecognition(browser, Keys)
+            multiple_correct = browser.find_elements_by_class_name("rc-audiochallenge-error-message")
+
+    except Exception:
+        print("[INFO] There is no captcha")
+    
+    browser.switch_to.default_content()
+    browser.implicitly_wait(5)
+
+
+def audioRecognition(browser, Keys):
+    # get the mp3 audio file
+    src = browser.find_element_by_id("audio-source").get_attribute("src")
+    print("[INFO] Audio src: %s" % src)
+
+    # download the mp3 audio file from the source
+    urllib.request.urlretrieve(src, os.path.normpath(os.getcwd() + "\\sample.mp3"))
+    browser.implicitly_wait(5)
+
+    # load downloaded mp3 audio file as .wav
+    try:
+        sound = pydub.AudioSegment.from_mp3(os.path.normpath(os.getcwd() + "\\sample.mp3"))
+        sound.export(os.path.normpath(os.getcwd() + "\\sample.wav"), format="wav")
+        sample_audio = sr.AudioFile(os.path.normpath(os.getcwd() + "\\sample.wav"))
+    except Exception:
+        print("[ERR] Please run program as administrator or download ffmpeg manually, "
+                "http://blog.gregzaal.com/how-to-install-ffmpeg-on-windows/")
+
+    # translate audio to text with google voice recognition
+    r = sr.Recognizer()
+    with sample_audio as source:
+        audio = r.record(source)
+    key = r.recognize_google(audio)
+    print("[INFO] Recaptcha Passcode: %s" % key)
+
+    # key in results and submit
+    browser.find_element_by_id("audio-response").send_keys(key.lower())
+    browser.find_element_by_id("audio-response").send_keys(Keys.ENTER)
