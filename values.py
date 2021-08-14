@@ -4,12 +4,14 @@ from selenium import webdriver
 #
 #
 # Emailmu Si AKAD blyat
-Email = os.environ.get('EMAIL')
+# Email = os.environ.get('EMAIL')
+Email = 'gagas_surya_28rpl@student.smktelkom-mlg.sch.id'
 #
 #
 #
 # Passwordmu Si AKAD blyat
-Password = os.environ.get('PASSWORD')
+# Password = os.environ.get('PASSWORD')
+Password = 'Sealyichinaisha'
 
 
 def email():
