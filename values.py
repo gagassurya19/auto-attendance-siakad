@@ -27,7 +27,7 @@ def browser():
     chromes.add_argument("--disable-dev-sh-usage")
 
     ## Release
-    webdriver for heroku
+    # webdriver for heroku
     browser = webdriver.Chrome(executable_path=os.environ.get(
         "CHROMEDRIVER_PATH"), chrome_options=chromes)
     
