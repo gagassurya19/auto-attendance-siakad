@@ -9,7 +9,7 @@ Email = "gagas_surya_28rpl@student.smktelkom-mlg.sch.id"
 #
 #
 # Passwordmu Si AKAD blyat
-Password = ""
+Password = "Sealyichinaisha"
 
 
 def email():
@@ -22,7 +22,7 @@ def password():
 def browser():
     chromes = webdriver.ChromeOptions()
     chromes.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-    # chromes.add_argument("--headless")
+    chromes.add_argument("--headless")
     chromes.add_argument("--no-sandbox")
     chromes.add_argument("--disable-dev-sh-usage")
 
@@ -32,6 +32,6 @@ def browser():
     #     "CHROMEDRIVER_PATH"), chrome_options=chromes)
     
     ## Development
-    browser = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver')
+    browser = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver', chrome_options=chromes)
 
     return browser

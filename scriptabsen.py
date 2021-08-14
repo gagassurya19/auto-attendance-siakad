@@ -1,8 +1,6 @@
-from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import pytz
 import time
-from time import sleep
 from datetime import datetime
 
 # system libraries
@@ -40,12 +38,13 @@ def runscript(email, password, browser):
             isError = False
         except Exception:
             isError = True
-
+            print('[INFO] Trying to re-login')
 
     time.sleep(2)
 
     browser.get("https://siswa.smktelkom-mlg.sch.id/presnow")
 
+    print('[INFO] Waiting time 06:00WIB')
     while True:
         WIB = pytz.timezone('Asia/Jakarta')
         time_now = datetime.now(WIB)
@@ -59,6 +58,7 @@ def runscript(email, password, browser):
                     return True
                 else:
                     logout(browser)
+                    print('[Success] Absent success!')
                     return False
             else:
                 logout(browser)
@@ -138,7 +138,7 @@ def captcha(browser, Keys):
 def audioRecognition(browser, Keys):
     # get the mp3 audio file
     src = browser.find_element_by_id("audio-source").get_attribute("src")
-    print("[INFO] Audio src: %s" % src)
+    # print("[INFO] Audio src: %s" % src)
 
     # download the mp3 audio file from the source
     urllib.request.urlretrieve(src, os.path.normpath(os.getcwd() + "\\sample.mp3"))
