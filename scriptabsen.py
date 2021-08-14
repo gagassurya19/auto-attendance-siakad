@@ -1,8 +1,6 @@
-from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import pytz
 import time
-from time import sleep
 from datetime import datetime
 
 # system libraries
@@ -46,6 +44,7 @@ def runscript(email, password, browser):
 
     browser.get("https://siswa.smktelkom-mlg.sch.id/presnow")
 
+    print("[INFO] Waiting time 06:00AM WIB")
     while True:
         WIB = pytz.timezone('Asia/Jakarta')
         time_now = datetime.now(WIB)
