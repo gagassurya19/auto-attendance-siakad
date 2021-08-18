@@ -12,33 +12,30 @@ import pydub
 import speech_recognition as sr
 
 def runscript(email, password, browser):
-    isError = True
-    while(isError):
+
+    try:
         try:
-            try:
-                browser.get("https://siswa.smktelkom-mlg.sch.id")
-            except:
-                browser.close()
-                return False
+            browser.get("https://siswa.smktelkom-mlg.sch.id").set_page_load_timeout(60)
+        except:
+            browser.close()
+            return False
 
-            emailinput = browser.find_element_by_xpath(
-                '//*[@id="form_login"]/div[2]/div/input')
-            passinput = browser.find_element_by_xpath(
-                '//*[@id="form_login"]/div[3]/div/input')
+        emailinput = browser.find_element_by_xpath(
+            '//*[@id="form_login"]/div[2]/div/input')
+        passinput = browser.find_element_by_xpath(
+            '//*[@id="form_login"]/div[3]/div/input')
 
-            enter = browser.find_element_by_id('masuk')
+        enter = browser.find_element_by_id('masuk')
 
-            emailinput.send_keys(str(email))
-            passinput.send_keys(str(password))
+        emailinput.send_keys(str(email))
+        passinput.send_keys(str(password))
 
-            captcha(browser, Keys)
+        captcha(browser, Keys)
+        # time.sleep(25)
 
-            enter.click()
-
-            isError = False
-        except Exception:
-            isError = True
-
+        enter.click()
+    except:
+        return False
 
     time.sleep(2)
 
@@ -91,7 +88,6 @@ def override(email, password, browser):
         if data == True:
             return True
 
-
 def captcha(browser, Keys):
     # main program
     # switch to recaptcha frame
@@ -109,7 +105,6 @@ def captcha(browser, Keys):
         browser.switch_to.frame(frames[0])
         browser.implicitly_wait(5)
 
-
         # click on audio challenge
         browser.find_element_by_id("recaptcha-audio-button").click()
 
@@ -121,14 +116,16 @@ def captcha(browser, Keys):
 
         audioRecognition(browser, Keys)
         
+        count = 0
         multiple_correct = browser.find_elements_by_class_name("rc-audiochallenge-error-message")
-
         while(multiple_correct):
             audioRecognition(browser, Keys)
             multiple_correct = browser.find_elements_by_class_name("rc-audiochallenge-error-message")
-
+            count += 1
+            if(count == 3): 
+                break
     except Exception:
-        print("[INFO] There is no captcha")
+        print("[INFO] Aduuuh keblokir ngab, balen maneng")
     
     browser.switch_to.default_content()
     browser.implicitly_wait(5)
@@ -160,5 +157,7 @@ def audioRecognition(browser, Keys):
     print("[INFO] Recaptcha Passcode: %s" % key)
 
     # key in results and submit
+
     browser.find_element_by_id("audio-response").send_keys(key.lower())
+
     browser.find_element_by_id("audio-response").send_keys(Keys.ENTER)
