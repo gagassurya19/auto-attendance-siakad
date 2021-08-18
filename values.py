@@ -13,7 +13,7 @@ Email = "gagas_surya_28rpl@student.smktelkom-mlg.sch.id"
 #
 #
 # Passwordmu Si AKAD blyat
-Password = "Sealyichinaisha"
+Password = ""
 
 
 def email():
