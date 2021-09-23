@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 from capmonster_python import NoCaptchaTaskProxyless
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.alert import Alert
 
 
 def runscript(account, sitelogger, browser):
@@ -66,11 +67,17 @@ def runscript(account, sitelogger, browser):
 
 
 def absen(browser):
-    inputabsen = browser.find_element_by_xpath(
-        "/html/body/section[2]/div[2]/div[2]/form/div/div[2]/div[1]/label[1]")
+    Masuk = browser.find_element_by_xpath(
+        "/html/body/section[2]/div[2]/div[2]/form/div/div[2]/div[1]/div[2]/label[1]")
+    Via = browser.find_element_by_xpath(
+        "/html/body/section[2]/div[2]/div[2]/form/div/div[2]/div[2]/div[2]/label[1]")
     simpan = browser.find_element_by_id("simpan")
-    inputabsen.click()
+    Masuk.click()
+    Via.click()
     simpan.click()
+    # Alert
+    alert = Alert(browser)
+    alert.accept()
 
 
 def cek_absen(browser):
