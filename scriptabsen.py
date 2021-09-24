@@ -3,7 +3,6 @@ import time
 from datetime import datetime
 from capmonster_python import NoCaptchaTaskProxyless
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.alert import Alert
 
 
 def runscript(account, sitelogger, browser):
@@ -14,10 +13,8 @@ def runscript(account, sitelogger, browser):
         browser.close()
         return False
 
-    emailinput = browser.find_element_by_xpath(
-        '//*[@id="form_login"]/div[2]/div/input')
-    passinput = browser.find_element_by_xpath(
-        '//*[@id="form_login"]/div[3]/div/input')
+    emailinput = browser.find_element_by_css_selector("input[name=email]")
+    passinput = browser.find_element_by_css_selector("input[name=password]")
     enter = browser.find_element_by_id('masuk')
 
     emailinput.send_keys(str(account[0]))
@@ -67,16 +64,14 @@ def runscript(account, sitelogger, browser):
 
 
 def absen(browser):
-    Masuk = browser.find_element_by_xpath(
-        "/html/body/section[2]/div[2]/div[2]/form/div/div[2]/div[1]/div[2]/label[1]")
-    Via = browser.find_element_by_xpath(
-        "/html/body/section[2]/div[2]/div[2]/form/div/div[2]/div[2]/div[2]/label[1]")
+    Masuk = browser.find_element_by_css_selector("label[for=M]")
+    Via = browser.find_element_by_css_selector("label[for=daring]")
     simpan = browser.find_element_by_id("simpan")
     Masuk.click()
     Via.click()
     simpan.click()
     # Alert
-    alert = Alert(browser)
+    alert = browser.switch_to.alert
     alert.accept()
 
 
