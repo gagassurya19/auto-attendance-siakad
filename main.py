@@ -16,6 +16,7 @@ while True:
             time_now.strftime('%M') == '58' and
             time_now.strftime('%a') != 'Sat' and
             time_now.strftime('%a') != 'Sun'):
+    # if True: # Development
         temp = scriptabsen.runscript(values.account(), values.sitelogger(), values.browser())
         times = datetime.now(WIB)
         if(temp == True):
@@ -23,7 +24,7 @@ while True:
         elif(temp == False):
             print("Absen gagal, SERVER SEKOLAH KENTANK, mencoba lagi " +
                     times.strftime('%c'))
-            ass = scriptabsen.override(values.account(), values.sitelogger(), values.browser())
+            ass = scriptabsen.runscript(values.account(), values.sitelogger(), values.browser())
             if ass == True:
                 timee = datetime.now(WIB)
                 print("Absen berhasil pada " + timee.strftime('%c'))
