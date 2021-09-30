@@ -9,14 +9,16 @@ from selenium.webdriver.common.by import By
 
 def runscript(account, sitelogger, browser):
     try:
-        print("Current session is {}".format(browser.session_id))
+        print("\n")
+        print("="*81)
+        print("@ Current session is {}".format(browser.session_id))
+        print("="*81)
+        print("--- GoTo Login Page ---")
         browser.get(str(sitelogger[0]))
         browser.maximize_window()
     except:
         browser.close()
         return False
-
-    print("+++ Login +++")
 
     emailinput = browser.find_element_by_css_selector("input[name=email]")
     passinput = browser.find_element_by_css_selector("input[name=password]")
@@ -33,7 +35,6 @@ def runscript(account, sitelogger, browser):
     response = captcha.joinTaskResult(taskId)
     print("# Response received.")
     browser.execute_script(f"document.getElementsByClassName('g-recaptcha-response')[0].innerHTML = '{response}';")
-    print(response)
     print("# Response injected to secret input.")
 
     time.sleep(5)
@@ -46,10 +47,10 @@ def runscript(account, sitelogger, browser):
         browser.close()
         return False
 
-    print("+++ Login Success +++")
+    print("--- Login Success ---")
 
     browser.get(str(sitelogger[3]))
-    print("+++ GoTo Absen Page +++")
+    print("--- GoTo Absen Page ---")
 
     print("# Nunggu jam 06:00AM WIB")
     while True:
@@ -75,27 +76,6 @@ def runscript(account, sitelogger, browser):
 def absen(browser):
     for i in range(10):
         try:
-            # pageLoad = WebDriverWait(browser, 3).until(EC.invisibility_of_element_located((By.CLASS_NAME, 'page-loader-wrapper')))
-            # print("pageLoad = {}".format(pageLoad))
-            
-            # browser.find_element_by_xpath(
-            #     ".//*[contains(text(), 'Masuk')]"
-            # ).click()
-
-            # print("MASUK")
-
-            # browser.find_element_by_xpath(
-            #     ".//*[contains(text(), 'DARING')]"
-            # ).click()
-
-            # print("DARING")
-            
-            # browser.find_element_by_xpath(
-            #     ".//*[contains(text(), 'SIMPAN')]"
-            # ).click()
-
-            # print("SIMPAN")
-
             #delete element with JavaScript Executor
             browser.execute_script("""
             var l = document.getElementsByClassName("page-loader-wrapper")[0];
@@ -104,22 +84,20 @@ def absen(browser):
 
             masuk = WebDriverWait(browser, 3).until(EC.element_to_be_clickable((By.XPATH, ".//*[contains(text(), 'Masuk')]")))
             masuk.click()
-            print("MASUK")
+            print("> MASUK")
 
             daring = WebDriverWait(browser, 3).until(EC.element_to_be_clickable((By.XPATH, ".//*[contains(text(), 'DARING')]")))
             daring.click()
-            print("DARING")
+            print("> DARING")
 
             simpan = WebDriverWait(browser, 3).until(EC.element_to_be_clickable((By.XPATH, ".//*[contains(text(), 'SIMPAN')]")))
             simpan.click()
-            print("SIMPAN")
+            print("> SIMPAN")
 
             # Alert
             alert = browser.switch_to.alert
             alert.accept()
-            print("ACCEPT")
-
-            print("berhasil!")
+            print("> ACCEPT ALERT")
             break
         except NoSuchElementException as e:
             print('Retry in 1 second -{}'.format(i+1))
@@ -127,14 +105,18 @@ def absen(browser):
 
 
 def cek_absen(browser):
-    print("+++ check absen +++")
+    print("# Check Absen")
     tmp = browser.find_element_by_css_selector("div[class=number]")
     if(tmp.text == 'Masuk'):
+        print("--- Absen Success ---")
         return True
     else:
+        print("--- Absen Failed ---")
         return False
 
 
 def logout(browser):
+    print("--- Logout ---")
+    print("="*81)
     browser.get("https://siswa.smktelkom-mlg.sch.id/login/logout")
     browser.close()
