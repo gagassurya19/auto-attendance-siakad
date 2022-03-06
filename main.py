@@ -22,7 +22,7 @@ def setTimer(setTime):
 while True:
     print("="*81)
     print("READY!")
-    setTimer("05:58:00")
+    # setTimer("05:50:00")
     sleep(5 - time() % 5)
 
     WIB = pytz.timezone('Asia/Jakarta')

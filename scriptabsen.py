@@ -1,7 +1,7 @@
 import pytz
 import time
 from datetime import datetime
-from capmonster_python import NoCaptchaTaskProxyless
+from capmonster_python import RecaptchaV2Task
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC
@@ -27,21 +27,27 @@ def runscript(account, sitelogger, browser):
     emailinput.send_keys(str(account[0]))
     passinput.send_keys(str(account[1]))
 
-    # skipcaptcha
+    # skipcaptcha v2
     website_url = browser.current_url
-    captcha = NoCaptchaTaskProxyless(client_key=str(sitelogger[2]))
-    taskId = captcha.createTask(website_url, sitelogger[1])
-    print("# Task created successfully, waiting for the response.")
-    response = captcha.joinTaskResult(taskId)
-    print("# Response received.")
-    browser.execute_script(f"document.getElementsByClassName('g-recaptcha-response')[0].innerHTML = '{response}';")
-    print("# Response injected to secret input.")
+    capmonster = RecaptchaV2Task(sitelogger[2])
+    print("capmonster: ", capmonster)
 
-    time.sleep(5)
+    task_id = capmonster.create_task(website_url, sitelogger[1])
+    print("task_id: ", task_id)
+
+    result = capmonster.join_task_result(task_id)
+    response = result.get("gRecaptchaResponse")
+    print("response: ", response)
+
+    browser.execute_script('var element=document.getElementById("g-recaptcha-response"); element.style.display="";')
+    browser.execute_script("""document.getElementById("g-recaptcha-response").innerHTML = arguments[0]""", response)
+    browser.execute_script('var element=document.getElementById("g-recaptcha-response"); element.style.display="none";')
+
+    time.sleep(20)
     enter.click()
 
     try:
-        el = WebDriverWait(browser, timeout=5).until(lambda d: d.find_element_by_tag_name("h2"))
+        el = WebDriverWait(browser, timeout=20).until(lambda d: d.find_element_by_tag_name("h2"))
         assert el.text == "DASHBOARD"
     except:
         browser.close()

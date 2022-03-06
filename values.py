@@ -4,13 +4,13 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 
 # Login Account
-Email = ""
-Password = ""
+Email = "Gagas_surya_28rpl@student.smktelkom-mlg.sch.id"
+Password = "Sealyichinaisha"
 # Website logger
 Website_url = "https://siswa.smktelkom-mlg.sch.id"
 Website_url_absen = "https://siswa.smktelkom-mlg.sch.id/presnow"
 Website_key = "6Lc7NmoUAAAAAJAgPU2_TypLL0H1UG_Fj9vUMl3O"
-Captcha_api = ""
+Captcha_api = "e4c1e7117adc63591e28c387080e7f9e"
 
 # =====================================
 # DON'T CHANGE THIS SETUP!
